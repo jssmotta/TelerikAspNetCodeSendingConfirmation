@@ -1,0 +1,150 @@
+﻿@{
+    ViewData["Title"] = "Available Plans";
+}
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">@ViewBag.Title.</h1>
+        <p class="lead-text text-muted">@ViewBag.Message</p>
+    </div>
+</section>
+
+<div class="row mb-3">
+    <div class="col-md mt-3 mb-3">
+        <div class="k-card">
+            <div class="k-card-header">
+                Plan Basic
+            </div>
+            <div class="k-card-body">
+                <p>Ideal for small businesses or startups, this plan offers a cost-effective solution to kickstart your marketing efforts. You'll receive 4 custom-designed content cards per month, perfect for enhancing your social media presence and engaging with your audience. This plan includes basic customization options to align with your brand identity.</p>
+            </div>
+            <div class="k-card-actions">
+                @(Html.Kendo().Button()
+                    .Name("cancelBasic")
+                    .Content("Cancel")
+                    .Events(ev => { ev.Click("closePage"); }))
+
+                @(Html.Kendo().Button()
+                    .Name("confirmBasic")
+                    .Content("Confirm")
+                    .ThemeColor(ThemeColor.Primary)
+                    .HtmlAttributes(new { type = "button", param = "BASIC" })
+                    .Events(ev => {  ev.Click("sendConfirmation"); }))
+            </div>
+        </div>
+    </div>
+    <div class="col-md mt-3 mb-3">
+        <div class="k-card">
+            <div class="k-card-header">
+                Pla Pro
+            </div>
+            <div class="k-card-body">
+                <p>Designed for growing businesses, our Pro plan elevates your marketing strategy. You'll get 12 expertly crafted content cards each month, offering more variety and frequency for your campaigns. This plan includes advanced customization features, ensuring each card perfectly represents your brand and message. Ideal for maintaining a consistent and impactful online presence.</p>
+            </div>
+            <div class="k-card-actions">
+                @(Html.Kendo().Button()
+                    .Name("cancelPro")
+                    .Content("Cancel")                   
+                    .Events(ev => { ev.Click("closePage"); }))
+
+                @(Html.Kendo().Button()
+                    .Name("confirmPro")
+                    .Content("Confirm")
+                    .ThemeColor(ThemeColor.Primary)
+                    .HtmlAttributes(new { type = "button", param = "PRO" })
+                    .Events(ev => { ev.Click("sendConfirmation"); }))
+            </div>
+        </div>
+    </div>
+    <div class="col-md mt-3 mb-3">
+        <div class="k-card">
+            <div class="k-card-header">
+                Plan Premium
+            </div>
+            <div class="k-card-body">
+                <p>Our top-tier plan caters to established businesses seeking a robust marketing approach. With 30 high-quality content cards each month, you can ensure a dynamic and engaging presence across all your platforms. This plan offers premium customization, including tailored branding elements and unique design features, to create a standout visual identity. Perfect for businesses aiming to lead and innovate in their industry.</p>
+            </div>
+            <div class="k-card-actions">
+                  @(Html.Kendo().Button()
+                    .Name("cancelPremium")
+                    .Content("Cancel") 
+                    .Events(ev => { ev.Click("closePage"); }))                    
+
+                @(Html.Kendo().Button()
+                    .Name("confirmPremium")
+                    .Content("Confirm")
+                    .ThemeColor(ThemeColor.Primary)
+                    .HtmlAttributes(new { type = "button", param = "PREMIUM" })
+                    .Events(ev => { ev.Click("sendConfirmation"); }))
+
+            </div>
+        </div>
+    </div>
+</div>
+@(Html.Kendo().Dialog()
+            .Name("dialog")
+            .Title("Plan confirmation") 
+            .Width(400)
+            .Modal(true)
+            .Visible(false)
+            .Actions(actions =>
+            {
+            actions.Add().Text("Cancel").Action("closePage");
+            actions.Add().Text("Send").Action("sendEmail").Primary(true);
+           }))
+
+@(Html.Kendo().Dialog()
+        .Name("dialogSuccess")
+        .Title("Success")
+        .Content("<p>Your subscription confirmation was send to your email account.<p>")
+        .Width(400)
+        .Modal(true)
+        .Visible(false)
+        .Actions(actions =>
+        {
+            actions.Add().Text("Close").Action("closePage").Primary(true);
+        }))
+
+@(Html.Kendo().Dialog()
+        .Name("dialogError")
+        .Title("Error")
+        .Content("<p>Occured an error sending your subscription to your email account. Please, try again later.<p>")
+        .Width(400)
+        .Modal(true)
+        .Visible(false)
+        .Actions(actions =>
+        {
+            actions.Add().Text("Close").Action("closePage").Primary(true);
+        })) 
+
+<script>
+
+    let typePlan = "";    
+
+    function sendEmail() {
+
+        var TypePlan = typePlan;
+
+        $.ajax({
+            url: '/SendEmail/SendEmail',
+            type: 'POST',
+            data: { TypePlan: TypePlan },
+            success: function (response) {
+                $('#dialogSuccess').data("kendoDialog").open();
+            },
+            error: function (error) {
+                $('#dialogError').data("kendoDialog").open();
+            }
+        });
+    }
+    function sendConfirmation() {
+        typePlan = this.element.attr("param");        
+        $('#dialog').html("<p>You are about to confirm your " + typePlan + " plan.</p>");
+        $('#dialog').data("kendoDialog").open();
+    }     
+
+    function closePage() {
+        window.location.href = '@Url.Action("Index", "Home")';
+    }
+
+</script>
