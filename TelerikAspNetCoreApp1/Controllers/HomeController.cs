@@ -38,7 +38,7 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult SendEmailConfirm()
+    public IActionResult SendEmailConfirmation()
     {
         ViewData["Message"] = "Choose your plan";
 

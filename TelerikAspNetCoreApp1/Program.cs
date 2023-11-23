@@ -5,7 +5,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddKendo();
-
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.AutomaticAuthentication = false;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
